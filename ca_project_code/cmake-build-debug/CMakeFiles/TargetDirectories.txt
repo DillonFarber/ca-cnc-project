@@ -1,0 +1,3 @@
+C:/Users/dillo/Mygithub/ca_project_code/cmake-build-debug/CMakeFiles/ca_project_code.dir
+C:/Users/dillo/Mygithub/ca_project_code/cmake-build-debug/CMakeFiles/edit_cache.dir
+C:/Users/dillo/Mygithub/ca_project_code/cmake-build-debug/CMakeFiles/rebuild_cache.dir
