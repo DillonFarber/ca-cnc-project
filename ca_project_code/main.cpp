@@ -82,7 +82,7 @@ void setup() {
 }
 
 void loop() {
-    limitSwitch_1
+    limitSwitch_1.loop();
 
 }
 
