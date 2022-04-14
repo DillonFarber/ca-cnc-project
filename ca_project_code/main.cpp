@@ -14,9 +14,6 @@
 // Delete the following from the file for the Arduino IDE
 #include "libs/A4988.h"
 #include "libs/BasicStepperDriver.h"
-// #include "libs/DRV8825.h"
-// #include "libs/DRV8834.h"
-// #include "libs/DRV8880.h"
 #include "libs/MultiDriver.h"
 #include "libs/SyncDriver.h"
 #include "libs/ezButton.h"
