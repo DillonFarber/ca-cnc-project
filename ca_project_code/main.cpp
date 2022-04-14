@@ -82,14 +82,36 @@ void setup() {
     limitSwitch_1.setDebounceTime(50);
     limitSwitch_2.setDebounceTime(50);
     //homing();
-    comnds.begin()
+    comnds.begin();
+    
     
 }
 
-void loop() {
+void loop() 
+{
+    if(comnds.available())
+    {
+        double nextX;
+        double nextY;
+        double nextZ; 
     
-    limitSwitch_1.loop();
+        if(comnds.availableValue('X'))
+            nextX = comnds.GetValue('X');
+        if(comnds.availableValue('Y'))
+            nextY = comnds.GetValue('Y');
+        if(comnds.availableValue('Z'))
+            nextZ = comnds.GetValue('Z');
 
+
+        if(nextZ > 0)
+        {
+            // run code to make servo move up or down
+        }
+
+        gotoLocation(nextX, nextY);
+
+        Z = nextZ;
+    }
 }
 
 void homing(){
@@ -114,8 +136,22 @@ void homing(){
 }
 void movement(){
 }
-void gotoLocation(double x, double y){
-}
-void calibrate(){
+void gotoLocation(double x, double y)
+{
+    int numStepsX = (x - X)*Steps_mm;
+    int numStepsY = (y - Y)*Steps_mm;
+    x_axis_motor.enable();
+    y_axis_motor.enable();
+
+    controller.move(numStepsX, numStepsY);
+
+    X = x;
+    Y = y;
+
+    x_axis_motor.disable();
+    y_axis_motor.disable();
+    
+    // comnds.comment("") send back commands or where it is 
+    // for voice 
 
 }
