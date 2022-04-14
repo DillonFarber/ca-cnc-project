@@ -14,14 +14,14 @@
 // Delete the following from the file for the Arduino IDE
 #include "libs/A4988.h"
 #include "libs/BasicStepperDriver.h"
-#include "libs/DRV8825.h"
-#include "libs/DRV8834.h"
-#include "libs/DRV8880.h"
+// #include "libs/DRV8825.h"
+// #include "libs/DRV8834.h"
+// #include "libs/DRV8880.h"
 #include "libs/MultiDriver.h"
 #include "libs/SyncDriver.h"
 #include "libs/ezButton.h"
 #include "libs/Stepper.h"
-#include
+#include "libs/gcode.h"
 
 
 #define Steps 32
@@ -66,28 +66,53 @@ ezButton limitSwitch_2(pin); // ...
 
 // this brings the machine back to the home position
 void homing();
+commandscallback comnds[1] = {{"g28", homing}};
+gcode comnds(1, comnds);
 
 void movement();
 void gotoLocation(double x, double y);
 void calibrate();
 
-double X = 0.0;
-double Y = 0.0;
+double X;
+double Y;
+double Z;
 
 void setup() {
-    Serial.begin(115200);
-    Serial.println("Ready!");
+    x_axis_motor.begin(Motor_xaxis_RPM, MicroSteps);
+    y_axis_motor.begin(Motor_yaxis_RPM, MicroSteps);
+    x_axis_motor.setEnableActiveState(LOW);
+    y_axis_motor.setEnableActiveState(LOW);
     limitSwitch_1.setDebounceTime(50);
     limitSwitch_2.setDebounceTime(50);
+    //homing();
+    comnds.begin()
+    
 }
 
 void loop() {
-    limitSwitch_1
+    
 
 }
 
-void homing{
-  
+void homing(){
+    while(limitSwitch_1.isReleased())
+    {
+        x_axis_motor.move(-1);
+        if(limitSwitch_1.isPressed())
+            {
+                x_axis_motor.move(1);
+                break;
+            }
+    }
+    while(limitSwitch_2.isReleased())
+    {
+        y_axis_motor.move(-1);
+        if(limitSwitch_2.isPressed())
+            {
+                y_axis_motor.move(1);
+                break;
+            }
+    }
 }
 void movement(){
 }
