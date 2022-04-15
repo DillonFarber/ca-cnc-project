@@ -15,6 +15,7 @@
     #include <Stepper.h>
     #include <gcode.h>
     #include "config.h"
+    #include <Servo.h>
 */
 #include "libs/A4988.h"
 #include "libs/BasicStepperDriver.h"
@@ -23,6 +24,8 @@
 #include "libs/ezButton.h"
 #include "libs/Stepper.h"
 #include "libs/gcode.h"
+#include "libs/Servo.h"
+
 
 
 #define Steps 32
