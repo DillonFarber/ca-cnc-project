@@ -65,6 +65,8 @@ SyncDriver controller(x_axis_motor, y_axis_motor);
 ezButton limitSwitch_1(9); // pin will be the number of pin used for switch
 ezButton limitSwitch_2(10); // ...
 
+// creating servo for pen 
+Servo zPen;
 
 // this brings the machine back to the home position
 void homing();
@@ -80,6 +82,8 @@ double Y;
 double Z;
 
 void setup() {
+    // setting pin for servo
+    zPen.attach(11);
     //Enabling pin mode for the enable pin
     pinMode(Enable, OUTPUT);
     // SETTING UP MOTORS X AND Y 
@@ -115,9 +119,15 @@ void loop()
 
         if(nextZ > 0)
         {
-            // run code to make servo move up or down
+            zPen.write(45);
+            delay(15);
         }
-        if()
+        else
+        {
+            zPen.write(0);
+            delay(15);
+        }
+
         gotoLocation(nextX, nextY);
 
         Z = nextZ;
