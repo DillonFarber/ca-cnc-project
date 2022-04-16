@@ -26,7 +26,7 @@
 
 
 
-#define Steps 32
+// #define Steps 32
 
 #define Num_Commands 2
 
@@ -70,10 +70,9 @@ Servo zPen;
 
 // this brings the machine back to the home position
 void homing();
-commandscallback comnds[1] = {{"g28", homing}};
-gcode comnds(1, comnds);
+commandscallback comnd[1] = {{"g28", homing}};
+gcode comnds(1, comnd);
 
-void movement();
 void gotoLocation(double x, double y);
 void calibrate();
 
@@ -156,8 +155,6 @@ void homing(){
     X = 0;
     Y = 0;
     Z = 0;
-}
-void movement(){
 }
 void gotoLocation(double x, double y)
 {
