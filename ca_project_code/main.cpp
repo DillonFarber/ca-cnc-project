@@ -127,7 +127,8 @@ void loop()
         if(comnds.availableValue('Z'))
             nextZ = comnds.GetValue('Z');
 
-
+        // moving ben up and down depending on 
+        // Z depth. 
         if(nextZ > 0)
         {
             zPen.write(45);
@@ -148,7 +149,7 @@ void loop()
 void homing(){
     while(limitSwitch_1.isReleased())
     {
-        x_axis_motor.move(-1);
+        x_axis_motor.move((-1 * Steps_mm));
         if(limitSwitch_1.isPressed())
             {
                 x_axis_motor.move(1);
@@ -157,7 +158,7 @@ void homing(){
     }
     while(limitSwitch_2.isReleased())
     {
-        y_axis_motor.move(-1);
+        y_axis_motor.move((-1 * Steps_mm));
         if(limitSwitch_2.isPressed())
             {
                 y_axis_motor.move(1);
