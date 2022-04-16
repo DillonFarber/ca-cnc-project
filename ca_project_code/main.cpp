@@ -173,15 +173,17 @@ void gotoLocation(double x, double y)
 {
     xCount += (x - X);
     yCount += (y - Y);
+    int numStepsX;
+    int numStepsY;
     
     if(xCount < HARD_X_LIMIT)
-        int numStepsX = (x - X)*Steps_mm;
+        numStepsX = (x - X)*Steps_mm;
     else
-        int numStepsX = 0;
+        numStepsX = 0;
     if(yCount < HARD_Y_LIMIT) 
-        int numStepsY = (y - Y)*Steps_mm;
+        numStepsY = (y - Y)*Steps_mm;
     else
-        int numStepsY = 0;
+        numStepsY = 0;
 
     x_axis_motor.enable();
     y_axis_motor.enable();
