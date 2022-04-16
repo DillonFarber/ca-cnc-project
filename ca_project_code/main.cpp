@@ -53,6 +53,14 @@
 // 1=full step, 2=half step, 4 = 1/4, 8 = 1/8 and 16 = 1/6 Microsteps.
 #define MicroSteps 16
 
+
+// Hard limits are set to a 8x11 inch sheet of paper. 
+// setting hardlimit for the x axis in mm
+#define HARD_X_LIMIT 203.2
+// setting harlimit for the y axis in mm
+#define HARD_Y_LIMIT 279.4
+
+
 // initialize the x and y-axis motors
 A4988 x_axis_motor(Motor_Steps, Dir_x, Step_x, Enable);
 A4988 y_axis_motor(Motor_Steps, Dir_y, Step_y, Enable);
@@ -75,6 +83,10 @@ gcode comnds(1, comnd);
 
 void gotoLocation(double x, double y);
 void calibrate();
+
+// setting up count for hard limits for the x and y axis. 
+double xCount;
+double yCount;
 
 double X;
 double Y;
@@ -156,10 +168,21 @@ void homing(){
     Y = 0;
     Z = 0;
 }
+
 void gotoLocation(double x, double y)
 {
-    int numStepsX = (x - X)*Steps_mm;
-    int numStepsY = (y - Y)*Steps_mm;
+    xCount += (x - X);
+    yCount += (y - Y);
+    
+    if(xCount < HARD_X_LIMIT)
+        int numStepsX = (x - X)*Steps_mm;
+    else
+        int numStepsX = 0;
+    if(yCount < HARD_Y_LIMIT) 
+        int numStepsY = (y - Y)*Steps_mm;
+    else
+        int numStepsY = 0;
+
     x_axis_motor.enable();
     y_axis_motor.enable();
 
