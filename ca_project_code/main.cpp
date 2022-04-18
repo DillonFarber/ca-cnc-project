@@ -106,7 +106,7 @@ void setup() {
     // SETTING THE LIMIT SWITCH DEBOUNCE TIME
     limitSwitch_1.setDebounceTime(50);
     limitSwitch_2.setDebounceTime(50);
-    //homing();
+    homing();
     comnds.begin();
     
     
@@ -147,23 +147,38 @@ void loop()
 }
 
 void homing(){
-    while(limitSwitch_1.isReleased())
+    x_axis_motor.enable();
+    y_axis_motor.enable();
+    int stepBack = -1 * Steps_mm;
+    int stepForw = 1 * Steps_mm;
+    int step = 0;
+
+    while(limitSwitch_1.isReleased() && limitSwitch_2.isReleased())
     {
-        x_axis_motor.move((-1 * Steps_mm));
         if(limitSwitch_1.isPressed())
+            if(limitSwitch_2.isPressed())
             {
-                x_axis_motor.move(1);
+                while(limitSwitch_1.isPressed() && limitSwitch_2.isPressed())
+                    controller.move(stepForw, stepForw);
                 break;
             }
-    }
-    while(limitSwitch_2.isReleased())
-    {
-        y_axis_motor.move((-1 * Steps_mm));
-        if(limitSwitch_2.isPressed())
+            else
             {
-                y_axis_motor.move(1);
-                break;
+                y_axis_motor.move(stepBack);
             }
+        else
+        {
+            if(limitSwitch_2.isPressed())
+            {
+                x_axis_motor.move(stepBack);
+            }
+            else
+            {
+                controller.move(stepBack,stepBack);
+            }
+        }
+        
+            
     }
     X = 0;
     Y = 0;
