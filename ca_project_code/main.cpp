@@ -26,7 +26,7 @@
 
 
 
-#define Steps 32
+// #define Steps 32
 
 #define Num_Commands 2
 
@@ -53,6 +53,14 @@
 // 1=full step, 2=half step, 4 = 1/4, 8 = 1/8 and 16 = 1/6 Microsteps.
 #define MicroSteps 16
 
+
+// Hard limits are set to a 8x11 inch sheet of paper. 
+// setting hardlimit for the x axis in mm
+#define HARD_X_LIMIT 203.2
+// setting harlimit for the y axis in mm
+#define HARD_Y_LIMIT 279.4
+
+
 // initialize the x and y-axis motors
 A4988 x_axis_motor(Motor_Steps, Dir_x, Step_x, Enable);
 A4988 y_axis_motor(Motor_Steps, Dir_y, Step_y, Enable);
@@ -65,21 +73,28 @@ SyncDriver controller(x_axis_motor, y_axis_motor);
 ezButton limitSwitch_1(9); // pin will be the number of pin used for switch
 ezButton limitSwitch_2(10); // ...
 
+// creating servo for pen 
+Servo zPen;
 
 // this brings the machine back to the home position
 void homing();
-commandscallback comnds[1] = {{"g28", homing}};
-gcode comnds(1, comnds);
+commandscallback comnd[1] = {{"g28", homing}};
+gcode comnds(1, comnd);
 
-void movement();
 void gotoLocation(double x, double y);
 void calibrate();
+
+// setting up count for hard limits for the x and y axis. 
+double xCount;
+double yCount;
 
 double X;
 double Y;
 double Z;
 
 void setup() {
+    // setting pin for servo
+    zPen.attach(11);
     //Enabling pin mode for the enable pin
     pinMode(Enable, OUTPUT);
     // SETTING UP MOTORS X AND Y 
@@ -112,12 +127,19 @@ void loop()
         if(comnds.availableValue('Z'))
             nextZ = comnds.GetValue('Z');
 
-
+        // moving ben up and down depending on 
+        // Z depth. 
         if(nextZ > 0)
         {
-            // run code to make servo move up or down
+            zPen.write(45);
+            delay(15);
         }
-        if()
+        else
+        {
+            zPen.write(0);
+            delay(15);
+        }
+
         gotoLocation(nextX, nextY);
 
         Z = nextZ;
@@ -127,7 +149,7 @@ void loop()
 void homing(){
     while(limitSwitch_1.isReleased())
     {
-        x_axis_motor.move(-1);
+        x_axis_motor.move((-1 * Steps_mm));
         if(limitSwitch_1.isPressed())
             {
                 x_axis_motor.move(1);
@@ -136,7 +158,7 @@ void homing(){
     }
     while(limitSwitch_2.isReleased())
     {
-        y_axis_motor.move(-1);
+        y_axis_motor.move((-1 * Steps_mm));
         if(limitSwitch_2.isPressed())
             {
                 y_axis_motor.move(1);
@@ -147,12 +169,23 @@ void homing(){
     Y = 0;
     Z = 0;
 }
-void movement(){
-}
+
 void gotoLocation(double x, double y)
 {
-    int numStepsX = (x - X)*Steps_mm;
-    int numStepsY = (y - Y)*Steps_mm;
+    xCount += (x - X);
+    yCount += (y - Y);
+    int numStepsX;
+    int numStepsY;
+    
+    if(xCount < HARD_X_LIMIT)
+        numStepsX = (x - X)*Steps_mm;
+    else
+        numStepsX = 0;
+    if(yCount < HARD_Y_LIMIT) 
+        numStepsY = (y - Y)*Steps_mm;
+    else
+        numStepsY = 0;
+
     x_axis_motor.enable();
     y_axis_motor.enable();
 
