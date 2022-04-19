@@ -25,3 +25,7 @@
 > 3. copy and paste code into IDE
 > 4. go to sketch->include libraries->add .ZIP library
 > 5. find the folder of the resource folder from my repo and add them from there. read documents from main, you only need a few. The others are reference, and included in the Arduino IDE.
+
+
+### Resource
+- cnc layout for the project with pinouts and schematics https://schaltplan-online.blogspot.com/2022/01/arduino-cnc-shield-v3-schematic.html
