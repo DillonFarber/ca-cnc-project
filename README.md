@@ -9,19 +9,19 @@
 ### Tutorials 
 
 #### Inkscape
-> 1: Download inkscape tool from https://inkscape.org/ for your OS
-> 2: The inkscape has all the gcode tools needed to create the gcode from an image. Tutorial I used form youtube https://www.youtube.com/watch?v=rMHTPXP7puo
+> 1. Download inkscape tool from https://inkscape.org/ for your OS
+> 2. The inkscape has all the gcode tools needed to create the gcode from an image. Tutorial I used form youtube https://www.youtube.com/watch?v=rMHTPXP7puo
 
 #### Universal Gcode Sender
-> 1: clone, download ugs form the https://winder.github.io/ugs_website/download/
-> 2: connect arduino to usb
-> 3: upload gcode to the usg platform
-> 4: start ugs
+> 1. clone, download ugs form the https://winder.github.io/ugs_website/download/
+> 2. connect arduino to usb
+> 3. upload gcode to the usg platform
+> 4. start ugs
 
 #### Drawing CNC 
 > clone my repo
-> 1: modify the header to work for the Arduino IDE
-> 2: download the Arduino IDE https://www.arduino.cc/en/software
-> 3: copy and paste code into IDE
-> 4: go to sketch->include libraries->add .ZIP library
-> 5: find the folder of the resource folder from my repo and add them from there. read documents from main, you only need a few. The others are reference, and included in the Arduino IDE.
+> 1. modify the header to work for the Arduino IDE
+> 2. download the Arduino IDE https://www.arduino.cc/en/software
+> 3. copy and paste code into IDE
+> 4. go to sketch->include libraries->add .ZIP library
+> 5. find the folder of the resource folder from my repo and add them from there. read documents from main, you only need a few. The others are reference, and included in the Arduino IDE.
