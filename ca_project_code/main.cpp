@@ -3,17 +3,31 @@
     The resources folder has all the resources/libraries below to inlcude into the
     arduino library manager to run the code as a cnc drawing code. 
 
-
+    // The A4988.h lib is used to control the steppers, it is a board that gives fine
+    // control over the steppers movement.
     #include <A4988.h>
-    #include <BasicStepperDriver.h>
+
+    // The BasicStepperDriver.h lib is used to control the stepper motors
+    #include <BasicStepperDriver.h>\
+
+    // Servo.h is used to control the servo of the pen
     #include <Servo.h>
-    #include <MultiDriver.h>
+
+    // SyncDriver.h gives a finer control of the motors, with making them move in a 
+    // syncronized movement for smoother drawing.
     #include <SyncDriver.h>
+
+    // ezButton.h is the lib for dealing with the limit switches
     #include <ezButton.h>
+
+    // Stepper.h is the the Arduino lib for stepper motor control. unused
     #include <Stepper.h>
+
+    // gcode.h is the lib for accessing the information from the serial bus 
+    // creating a buffer of commands to be read and stepped through to draw
+    // gives you the X, Y, and Z cords to go to, in our case move the Pen up and down.
     #include <gcode.h>
-    #include "config.h"
-    #include <Servo.h>
+
 */
 #include "libs/A4988.h"
 #include "libs/BasicStepperDriver.h"
@@ -106,6 +120,8 @@ void setup() {
     // SETTING THE LIMIT SWITCH DEBOUNCE TIME
     limitSwitch_1.setDebounceTime(50);
     limitSwitch_2.setDebounceTime(50);
+    //calling homing, and will be called a second, causing a bounce, but making sure it is 
+    // accurately zeroed.
     homing();
     comnds.begin();
     
@@ -114,77 +130,83 @@ void setup() {
 
 void loop() 
 {
+    // This checks if there are any commands to run
     if(comnds.available())
     {
         double nextX;
         double nextY;
-        double nextZ; 
-    
-        if(comnds.availableValue('X'))
-            nextX = comnds.GetValue('X');
-        if(comnds.availableValue('Y'))
-            nextY = comnds.GetValue('Y');
-        if(comnds.availableValue('Z'))
-            nextZ = comnds.GetValue('Z');
+        int nextZ; 
 
-        // moving ben up and down depending on 
-        // Z depth. 
-        if(nextZ > 0)
+        // checks for the M gcode to determine if the pen is up or down
+        if(comnds.availableValue('M'))
         {
-            zPen.write(45);
-            delay(15);
+            // recieve the pen value to move servo
+            nextZ = comnds.GetValue();
+            zPen.write(nextZ);
+            delay(30);
         }
         else
         {
-            zPen.write(0);
-            delay(15);
-        }
-
-        gotoLocation(nextX, nextY);
-
-        Z = nextZ;
-    }
-}
-
-void homing(){
-    x_axis_motor.enable();
-    y_axis_motor.enable();
-    int stepBack = -1 * Steps_mm;
-    int stepForw = 1 * Steps_mm;
-    int step = 0;
-
-    while(limitSwitch_1.isReleased() && limitSwitch_2.isReleased())
-    {
-        if(limitSwitch_1.isPressed())
-            if(limitSwitch_2.isPressed())
-            {
-                while(limitSwitch_1.isPressed() && limitSwitch_2.isPressed())
-                    controller.move(stepForw, stepForw);
-                break;
-            }
-            else
-            {
-                y_axis_motor.move(stepBack);
-            }
-        else
-        {
-            if(limitSwitch_2.isPressed())
-            {
-                x_axis_motor.move(stepBack);
-            }
-            else
-            {
-                controller.move(stepBack,stepBack);
-            }
+            // Checks for a X command in buffer, then gets the value if true
+            if(comnds.availableValue('X'))
+                nextX = comnds.GetValue('X');
+            // Checks for a Y command in buffer, then gets the value if true
+            if(comnds.availableValue('Y'))
+                nextY = comnds.GetValue('Y');
+            // once its found the values it sends it to the gotolocation
+            gotoLocation(nextX, nextY);
         }
         
-            
     }
-    X = 0;
-    Y = 0;
-    Z = 0;
 }
 
+/*
+    Functoin: homing()
+    Parameter(s): none
+    Method: homing() is used to find the home position of the cnc before it starts to run
+    the gcode. Allowing for it to be at the orgin of the xy-plane (0,0). The homing function first 
+    checks if the pen is up or down, moving it to the up position if it is not already.     
+*/
+void homing(){
+    int stepfor = 1 * Steps_mm;
+    int stepbac = -1 * Steps_mm;
+
+    if(zPen.read() > 1)
+        zPen.write(0);
+
+    while(limitSwitch_1.isReleased() || limitSwitch_2.isReleased())
+    {
+        if(limitSwitch_1.isReleased())
+            if(limitSwitch_2.isReleased())
+                controller.move(stepbac,stepbac);
+            else
+                controller.move(stepbac, 0);
+        else
+        {
+            if(limitSwitch_2.isReleased())
+                controller.move(0, stepbac);
+        }
+    }
+    while(limitSwitch_1.isPressed() && limitSwitch_2.isPressed())
+    {
+        controller.move(stepfor, stepfor);
+    }
+    if(limitSwitch_1.isPressed()||limitSwitch_2.isPressed())
+    {
+        exit(Serial.println("Error, limit homing failed"));
+    }
+    
+    X = 0;
+    Y = 0;
+}
+/*
+    Function: gotoLocation()
+    Parameter(s): double x, double y
+    Method: This function takes to x, y values then calculates the distance between them 
+    and then finds the number steps that each moter in that axis needs to step to get to the 
+    location. It steps the motor in milimeters(mm).
+    return: none/void
+*/
 void gotoLocation(double x, double y)
 {
     xCount += (x - X);
