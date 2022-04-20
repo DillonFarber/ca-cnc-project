@@ -141,10 +141,12 @@ void loop()
         if(comnds.availableValue('Z'))
         {
             // recieve the pen value to move servo
-            
             changeZ = comnds.GetValue();
+            // checking the value up if greater than 2 and down if less
             if(changeZ > 2)
             {
+                // checking the value the servo is at before we change 
+                // if already set leave alone
                 if(zPen.read() != 0)
                 {
                     zPen.write(0);
@@ -153,6 +155,8 @@ void loop()
             }
             else
             {
+                // checking the value the servo is at before we change 
+                // if already set leave alone
                 if(zPen.read() != 90)
                 {
                     zPen.write(90);
