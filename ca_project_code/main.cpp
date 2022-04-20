@@ -145,13 +145,19 @@ void loop()
             changeZ = comnds.GetValue();
             if(changeZ > 2)
             {
-                zPen.write(0);
-                delay(30)
+                if(zPen.read() != 0)
+                {
+                    zPen.write(0);
+                    delay(30)
+                }
             }
             else
             {
-                zPen.write(90);
-                delay(30);
+                if(zPen.read() != 90)
+                {
+                    zPen.write(90);
+                    delay(30);
+                }
             }
             
         }
