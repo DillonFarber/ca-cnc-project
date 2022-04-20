@@ -135,15 +135,25 @@ void loop()
     {
         double nextX;
         double nextY;
-        int nextZ; 
+        double changeZ;
 
         // checks for the M gcode to determine if the pen is up or down
-        if(comnds.availableValue('M'))
+        if(comnds.availableValue('Z'))
         {
             // recieve the pen value to move servo
-            nextZ = comnds.GetValue();
-            zPen.write(nextZ);
-            delay(30);
+            
+            changeZ = comnds.GetValue();
+            if(changeZ > 2)
+            {
+                zPen.write(0);
+                delay(30)
+            }
+            else
+            {
+                zPen.write(90);
+                delay(30);
+            }
+            
         }
         else
         {
