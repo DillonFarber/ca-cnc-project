@@ -141,7 +141,7 @@ void loop()
         if(comnds.availableValue('Z'))
         {
             // recieve the pen value to move servo
-            changeZ = comnds.GetValue();
+            changeZ = comnds.GetValue('Z');
             // checking the value up if greater than 2 and down if less
             if(changeZ > 2)
             {
@@ -150,7 +150,7 @@ void loop()
                 if(zPen.read() != 0)
                 {
                     zPen.write(0);
-                    delay(30)
+                    delay(30);
                 }
             }
             else
