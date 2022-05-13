@@ -29,3 +29,4 @@
 
 ### Resource
 - cnc layout for the project with pinouts and schematics https://schaltplan-online.blogspot.com/2022/01/arduino-cnc-shield-v3-schematic.html
+- grbl software open source code used to test machine https://github.com/grbl/grbl 
